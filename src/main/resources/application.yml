@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: SimSimGateway
+  profiles:
+      active: local
+  main:
+    web-application-type: reactive
+server:
+  port: 8080
+  forward-headers-strategy: native
+  max-http-request-header-size: 50MB
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      authService:
+        slidingWindowSize: 10                     #For every last 10 requests will be examined in Closed state.
+        permittedNumberOfCallsInHalfOpenState: 10  #In Half Open state, we allow 10 requests that will be examined to see if the situation changes.
+        failureRateThreshold: 50                  #If the 50 percent of last requests are failure, the circuit will change to Open.
+        waitDurationInOpenState: 10000            #The circuit becomes Half Open after 10 seconds.
+        registerHealthIndicator: true
