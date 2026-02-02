@@ -1,6 +1,6 @@
 spring:
   application:
-    name: SimSimGateway
+    name: SimSim-Gateway
   profiles:
       active: local
   main:

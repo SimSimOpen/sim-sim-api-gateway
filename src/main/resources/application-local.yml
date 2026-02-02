@@ -37,6 +37,19 @@ spring:
                   - INTERNAL_SERVER_ERROR
                   - BAD_GATEWAY
                   - SERVICE_UNAVAILABLE
+        - id: media
+          uri: lb://media-service
+          predicates:
+            - Path=/api/media/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: mediaService
+                fallbackUri: forward:/fallback
+                statusCodes:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                  - SERVICE_UNAVAILABLE
 eureka:
   client:
     service-url:
