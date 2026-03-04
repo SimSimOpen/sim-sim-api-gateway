@@ -1,6 +1,10 @@
 spring:
   cloud:
     gateway:
+      httpclient:
+        response-timeout: 3600000
+        connect-timeout:
+          5000:
       server:
         webflux:
           discovery:
@@ -59,7 +63,11 @@ spring:
           uri: lb://notification-service
           predicates:
             - Path=/api/event/**
+          metadata:
+            response-timeout: 3600000
+            connect-timeout: 5000
           filters:
+            - RemoveRequestHeader=Accept-Encoding
             - name: CircuitBreaker
               args:
                 name: notificationService
