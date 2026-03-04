@@ -8,7 +8,6 @@ spring:
               enabled: true
               lower-case-service-id: true
       default-filters:
-        - TokenRelay
         - PreserveHostHeader
       routes:
         - id: metrics-redirect
@@ -51,6 +50,19 @@ spring:
             - name: CircuitBreaker
               args:
                 name: mediaService
+                fallbackUri: forward:/fallback
+                statusCodes:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                  - SERVICE_UNAVAILABLE
+        - id: event
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/event/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: notificationService
                 fallbackUri: forward:/fallback
                 statusCodes:
                   - INTERNAL_SERVER_ERROR

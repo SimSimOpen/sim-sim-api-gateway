@@ -1,55 +1,66 @@
 spring:
   cloud:
     gateway:
-      default-filters:
-        - TokenRelay
-        - PreserveHostHeader
-      routes:
-        - id: metrics-redirect
-          uri: http://localhost:8080
-          predicates:
-            - Path=/metrics
-          filters:
-            - RedirectTo=302, /actuator/metrics
-        - id: auth
-          uri: lb://auth-service
-          predicates:
-            - Path=/api/auth/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: authService
-                fallbackUri: forward:/fallback
-                statusCodes:
-                  - INTERNAL_SERVER_ERROR
-                  - BAD_GATEWAY
-                  - SERVICE_UNAVAILABLE
-        - id: product
-          uri: lb://product-service
-          predicates:
-            - Path=/api/product/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: productService
-                fallbackUri: forward:/fallback
-                statusCodes:
-                  - INTERNAL_SERVER_ERROR
-                  - BAD_GATEWAY
-                  - SERVICE_UNAVAILABLE
-        - id: media
-          uri: lb://media-service
-          predicates:
-            - Path=/api/media/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: mediaService
-                fallbackUri: forward:/fallback
-                statusCodes:
-                  - INTERNAL_SERVER_ERROR
-                  - BAD_GATEWAY
-                  - SERVICE_UNAVAILABLE
-
-
-
+      server:
+        webflux:
+          default-filters:
+            - PreserveHostHeader
+          routes:
+            - id: metrics-redirect
+              uri: http://localhost:8080
+              predicates:
+                - Path=/metrics
+              filters:
+                - RedirectTo=302, /actuator/metrics
+            - id: auth
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: authService
+                    fallbackUri: forward:/fallback
+                    statusCodes:
+                      - INTERNAL_SERVER_ERROR
+                      - BAD_GATEWAY
+                      - SERVICE_UNAVAILABLE
+            - id: product
+              uri: lb://product-service
+              predicates:
+                - Path=/api/product/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: productService
+                    fallbackUri: forward:/fallback
+                    statusCodes:
+                      - INTERNAL_SERVER_ERROR
+                      - BAD_GATEWAY
+                      - SERVICE_UNAVAILABLE
+            - id: media
+              uri: lb://media-service
+              predicates:
+                - Path=/api/media/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: mediaService
+                    fallbackUri: forward:/fallback
+                    statusCodes:
+                      - INTERNAL_SERVER_ERROR
+                      - BAD_GATEWAY
+                      - SERVICE_UNAVAILABLE
+            - id: event
+              uri: lb://notification-service
+              predicates:
+                - Path=/api/event/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: notificationService
+                    fallbackUri: forward:/fallback
+                    statusCodes:
+                      - INTERNAL_SERVER_ERROR
+                      - BAD_GATEWAY
+                      - SERVICE_UNAVAILABLE
